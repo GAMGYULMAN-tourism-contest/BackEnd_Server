@@ -5,6 +5,8 @@ import com.example.gamgyulman.domain.member.jwt.JwtProvider;
 import com.example.gamgyulman.domain.member.service.OAuthUserService;
 import com.example.gamgyulman.domain.member.service.UserDetailService;
 import com.example.gamgyulman.global.config.filter.JwtFilter;
+import com.example.gamgyulman.global.config.filter.exception.JwtAccessDeniedHandler;
+import com.example.gamgyulman.global.config.filter.exception.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -40,6 +43,9 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(oAuthUserService))
                         .successHandler(customSuccessfulHandler)
                 )
+                .exceptionHandling(exceptionConfigurer -> exceptionConfigurer
+                        .authenticationEntryPoint(entryPoint())
+                        .accessDeniedHandler(accessDeniedHandler()))
         ;
         return http.build();
     }
@@ -47,5 +53,15 @@ public class SecurityConfig {
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter(jwtProvider, userDetailService);
+    }
+
+    @Bean
+    public JwtAuthenticationEntryPoint entryPoint() {
+        return new JwtAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public JwtAccessDeniedHandler accessDeniedHandler() {
+        return new JwtAccessDeniedHandler();
     }
 }
