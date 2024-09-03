@@ -41,8 +41,6 @@ public class TestController {
     @PostMapping("/methods/arguments")
     @Operation(summary = "부적절한 Request Body", description = "Request Body가 잘못되어 Valid에 걸리는 경우")
     public CustomResponse<String> invalidTest(@Valid @RequestBody TestDTO.InvalidDTO dto) {
-        log.info(dto.getName());
-        log.info(dto.getNickname());
         return CustomResponse.onSuccess("Request Body가 정상적입니다.");
     }
 
