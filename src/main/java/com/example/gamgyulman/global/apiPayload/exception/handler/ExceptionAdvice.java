@@ -4,6 +4,7 @@ import com.example.gamgyulman.global.apiPayload.CustomResponse;
 import com.example.gamgyulman.global.apiPayload.code.BaseErrorCode;
 import com.example.gamgyulman.global.apiPayload.code.GeneralErrorCode;
 import com.example.gamgyulman.global.apiPayload.exception.GeneralException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,7 +24,7 @@ public class ExceptionAdvice {
     public CustomResponse<List<String>> constraintViolationException(ConstraintViolationException e) {
 
         log.error(Arrays.toString(e.getStackTrace()));
-        List<String> message = e.getConstraintViolations().stream().map(violation -> violation.getMessage()).toList();
+        List<String> message = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
 
         return CustomResponse.onFailure(GeneralErrorCode.BAD_REQUEST_400, message);
     }
@@ -31,7 +32,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public CustomResponse<Map<String, String>> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         Map<String, String> error = new HashMap<>();
-        e.getBindingResult().getFieldErrors().stream().forEach(field -> error.put(field.getField(), field.getDefaultMessage()));
+        e.getBindingResult().getFieldErrors().forEach(field -> error.put(field.getField(), field.getDefaultMessage()));
 
         log.error(Arrays.toString(e.getStackTrace()));
         return CustomResponse.onFailure(GeneralErrorCode.BAD_REQUEST_400, error);
@@ -50,7 +51,6 @@ public class ExceptionAdvice {
     public CustomResponse<String> exception(Exception e) {
 
         log.error(Arrays.toString(e.getStackTrace()));
-        CustomResponse<String> response = CustomResponse.onFailure(GeneralErrorCode.INTERNAL_SERVER_ERROR_500);
 
         return CustomResponse.onFailure(GeneralErrorCode.INTERNAL_SERVER_ERROR_500);
     }
