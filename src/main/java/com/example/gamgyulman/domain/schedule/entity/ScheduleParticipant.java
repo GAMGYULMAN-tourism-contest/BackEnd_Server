@@ -1,6 +1,7 @@
 package com.example.gamgyulman.domain.schedule.entity;
 
 import com.example.gamgyulman.domain.member.entity.Member;
+import com.example.gamgyulman.domain.schedule.entity.enums.ScheduleParticipantRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,10 @@ public class ScheduleParticipant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_participant_id")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private ScheduleParticipantRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")

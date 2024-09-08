@@ -22,6 +22,12 @@ public class Schedule extends BaseEntity {
     @Column(name = "schedule_id")
     private Long id;
 
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "period")
     private int period;
 
