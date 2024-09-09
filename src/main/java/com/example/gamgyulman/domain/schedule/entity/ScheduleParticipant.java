@@ -2,17 +2,16 @@ package com.example.gamgyulman.domain.schedule.entity;
 
 import com.example.gamgyulman.domain.member.entity.Member;
 import com.example.gamgyulman.domain.schedule.entity.enums.ScheduleParticipantRole;
+import com.example.gamgyulman.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ScheduleParticipant {
+@Builder
+public class ScheduleParticipant extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
