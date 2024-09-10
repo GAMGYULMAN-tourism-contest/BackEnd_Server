@@ -1,5 +1,6 @@
 package com.example.gamgyulman.domain.schedule.service.command;
 
+import com.example.gamgyulman.domain.dayEvents.service.command.DayEventsCommandService;
 import com.example.gamgyulman.domain.member.entity.Member;
 import com.example.gamgyulman.domain.schedule.dto.ScheduleRequestDTO;
 import com.example.gamgyulman.domain.schedule.entity.Schedule;
@@ -24,6 +25,7 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
     private final ScheduleRepository scheduleRepository;
     private final ScheduleParticipantRepository scheduleParticipantRepository;
+    private final DayEventsCommandService dayEventsCommandService;
 
     @Override
     public Schedule createSchedule(Member member, ScheduleRequestDTO.CreateScheduleDTO dto) {
@@ -34,6 +36,8 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                 .schedule(schedule)
                 .build();
         scheduleParticipantRepository.save(participant);
+
+        dayEventsCommandService.createAllDayEvents(schedule);
 
         return schedule;
     }
@@ -60,6 +64,8 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
         else {
             throw new ScheduleException(ScheduleErrorCode.FORBIDDEN_MODIFY);
         }
+
+        dayEventsCommandService.updateDateOfDayEvents(schedule);
 
         return schedule;
     }
