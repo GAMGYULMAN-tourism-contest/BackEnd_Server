@@ -4,10 +4,7 @@ import com.example.gamgyulman.domain.event.entity.Event;
 import com.example.gamgyulman.domain.schedule.entity.Schedule;
 import com.example.gamgyulman.global.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class DayEvents extends BaseEntity {
 
     @Id
@@ -36,4 +34,7 @@ public class DayEvents extends BaseEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
+    public void updateDate(LocalDate date) {
+        this.date= date;
+    }
 }
