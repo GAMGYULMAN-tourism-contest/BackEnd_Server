@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ScheduleResponseDTO {
 
@@ -53,5 +54,30 @@ public class ScheduleResponseDTO {
         private int period;
         private LocalDate startDate;
         private LocalDate endDate;
+
+        public static SchedulePreviewDTO from(Schedule schedule) {
+            return SchedulePreviewDTO.builder()
+                    .id(schedule.getId())
+                    .title(schedule.getTitle())
+                    .description(schedule.getDescription())
+                    .period(schedule.getPeriod())
+                    .startDate(schedule.getStartDate())
+                    .endDate(schedule.getEndDate())
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class SchedulePreviewListDTO {
+        private List<SchedulePreviewDTO> list;
+
+        public static SchedulePreviewListDTO from(List<Schedule> scheduleList) {
+            return SchedulePreviewListDTO.builder()
+                    .list(scheduleList.stream().map(SchedulePreviewDTO::from).toList())
+                    .build();
+        }
     }
 }
