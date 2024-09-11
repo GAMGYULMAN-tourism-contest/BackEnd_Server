@@ -14,4 +14,9 @@ public class OAuth2DTO {
         private String name;
         private String picture;
     }
+
+    @Getter
+    public static class OAuth2AccessCodeDTO {
+        private String code;
+    }
 }

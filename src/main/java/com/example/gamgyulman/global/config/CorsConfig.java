@@ -18,6 +18,12 @@ public class CorsConfig {
         List<String> allowedMethod = new ArrayList<>();
         allowedMethod.add("GET");
         allowedMethod.add("POST");
+        allowedMethod.add("DELETE");
+        allowedMethod.add("PATCH");
+
+        corsConfiguration.setAllowedOrigins(allowedURL);
+        corsConfiguration.setAllowedMethods(allowedMethod);
+        corsConfiguration.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource cors = new UrlBasedCorsConfigurationSource();
         cors.registerCorsConfiguration("/**", corsConfiguration);

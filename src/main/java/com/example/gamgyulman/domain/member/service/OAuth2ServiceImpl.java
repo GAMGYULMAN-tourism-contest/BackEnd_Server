@@ -10,12 +10,18 @@ import com.example.gamgyulman.domain.member.jwt.JwtProvider;
 import com.example.gamgyulman.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.netty.http.client.HttpClient;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -33,7 +39,7 @@ public class OAuth2ServiceImpl implements OAuth2Service{
     @Value("${oauth2.google.client-secret}")
     private String secret;
 
-    @Value("${oauth2.google.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String redirectURI;
 
     @Override
@@ -75,22 +81,20 @@ public class OAuth2ServiceImpl implements OAuth2Service{
     private String getAccessTokenOnGoogle(String accessCode) {
         WebClient webClient = WebClient.builder()
                 .baseUrl("https://oauth2.googleapis.com")
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)))
                 .build();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("/token?");
-        sb.append("code=");
-        sb.append(accessCode);
-        sb.append("&client_id=");
-        sb.append(clientId);
-        sb.append("&client_secret=");
-        sb.append(secret);
-        sb.append("&redirect_uri=");
-        sb.append(redirectURI);
-        sb.append("&grant_type=authorization_code");
+        String decode = URLDecoder.decode(accessCode, StandardCharsets.UTF_8);
 
         String response = webClient.post()
-                .uri(sb.toString())
+                .uri(uriBuilder -> uriBuilder
+                        .path("/token")
+                        .queryParam("code", decode)
+                        .queryParam("client_id", clientId)
+                        .queryParam("client_secret", secret)
+                        .queryParam("redirect_uri", redirectURI)
+                        .queryParam("grant_type", "authorization_code")
+                        .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
