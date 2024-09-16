@@ -14,7 +14,7 @@ import java.time.Duration;
 @Slf4j
 public class OpenApiWebClientImpl implements OpenApiWebClient {
 
-    @Value("${open-api.uri.base}")
+    @Value("${open-api.uri.base.english}")
     private String baseUrl;
 
     @Override

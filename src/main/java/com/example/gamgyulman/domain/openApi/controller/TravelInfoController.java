@@ -3,6 +3,9 @@ package com.example.gamgyulman.domain.openApi.controller;
 import com.example.gamgyulman.domain.openApi.dto.TravelInfoResponseDTO;
 import com.example.gamgyulman.domain.openApi.service.OpenApiService;
 import com.example.gamgyulman.global.apiPayload.CustomResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,16 +21,21 @@ public class TravelInfoController {
 
     private final OpenApiService openApiService;
 
-    // 초기 화면 가져오기
-    // TODO: 어떤 것으로 가져올지 한 번 상의해보기
+    // 초기 화면 가져오기 & 키워드 검색
     @GetMapping
-    public CustomResponse<TravelInfoResponseDTO.DefaultTravelInfoListDTO> getDefaultTravel(@RequestParam int page,
-                                                                  @RequestParam int size) {
-        TravelInfoResponseDTO.DefaultTravelInfoListDTO response = openApiService.getDefaultTravel(page, size);
+    @Operation(summary = "키워드 검색 & Default 검색", description = "키워드를 검색하거나 키워드가 없을 시 Default 검색 결과를 반환")
+    @Parameters({
+            @Parameter(name = "keyword", description = "검색할 키워드, 없을 시 default 결과값 반환"),
+            @Parameter(name = "page", description = "페이지 수, 첫 페이지 = 1"),
+            @Parameter(name = "size", description = "한 페이지의 검색 결과 개수")
+    })
+    public CustomResponse<TravelInfoResponseDTO.DefaultTravelInfoListDTO> searchTravelWithKeyword(@RequestParam(required = false) String keyword,
+                                                                                                  @RequestParam(defaultValue = "1") int page,
+                                                                                                  @RequestParam(defaultValue = "10") int size) {
+        TravelInfoResponseDTO.DefaultTravelInfoListDTO response = openApiService.getTravels(keyword, page, size);
         return CustomResponse.onSuccess(response);
     }
 
-    // 키워드 검색
     // 상세 검색
 
 }
