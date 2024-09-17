@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/travels")
@@ -36,6 +33,15 @@ public class TravelInfoController {
         return CustomResponse.onSuccess(response);
     }
 
-    // 상세 검색
+    // 정보 상세 검색
+    @GetMapping("/{contentId}")
+    @Operation(summary = "여행 정보 상세 검색", description = "contentId를 이용하여 여행 장소의 상세 정보 가져오기")
+    @Parameter(name = "contentId", description = "ID(PK) 값으로 사용하는 contentId")
+    public CustomResponse<TravelInfoResponseDTO.TravelDetailInfoDTO> getDetailOfTravel(@PathVariable("contentId") String contentId,
+                                                                                       @RequestParam(defaultValue = "1") int page,
+                                                                                       @RequestParam(defaultValue = "10") int size) {
+        TravelInfoResponseDTO.TravelDetailInfoDTO response = openApiService.getDetailOfTravel(contentId, page, size);
+        return CustomResponse.onSuccess(response);
+    }
 
 }

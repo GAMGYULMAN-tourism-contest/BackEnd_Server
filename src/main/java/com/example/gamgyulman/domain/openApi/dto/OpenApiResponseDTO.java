@@ -36,4 +36,23 @@ public class OpenApiResponseDTO {
         private int pageNo;
         private int totalCount;
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class OpenApiDetailDTO {
+        private String contentid;
+        private String contenttypeid;
+        private String title;
+        private String tel;
+        private String homepage;
+        private String firstimage;
+        private String firstimage2;
+        private String addr1;
+        private String overview;
+        private double mapx;
+        private double mapy;
+    }
 }

@@ -66,4 +66,44 @@ public class TravelInfoResponseDTO {
 
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class TravelDetailInfoDTO {
+        private String title;
+        private String overview;
+        private String contentId;
+        private String contentTypeId;
+        private String homepage;
+        private List<String> images;
+        private String address;
+        private double mapx;
+        private double mapy;
+        private String tel;
+
+        public static TravelDetailInfoDTO from(OpenApiResponseDTO.OpenApiDetailDTO dto) {
+            List<String> imageList= new ArrayList<>();
+            if (!dto.getFirstimage().isEmpty()) {
+                imageList.add(dto.getFirstimage());
+                if (!dto.getFirstimage2().isEmpty()) {
+                    imageList.add(dto.getFirstimage2());
+                }
+            }
+            return TravelDetailInfoDTO.builder()
+                    .title(dto.getTitle())
+                    .overview(dto.getOverview())
+                    .contentId(dto.getContentid())
+                    .contentTypeId(dto.getContenttypeid())
+                    .homepage(dto.getHomepage())
+                    .images(imageList)
+                    .address(dto.getAddr1())
+                    .mapx(dto.getMapx())
+                    .mapy(dto.getMapy())
+                    .tel(dto.getTel())
+                    .build();
+
+        }
+    }
 }

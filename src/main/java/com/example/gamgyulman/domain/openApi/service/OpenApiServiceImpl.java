@@ -38,11 +38,15 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     // 지역 기반 Endpoint
     @Value("${open-api.endpoint.local-base}")
-    private String localBaseUrl;
+    private String localBaseEndpoint;
 
     // 키워드 검색 Endpoint
     @Value("${open-api.endpoint.keyword-search}")
-    private String keywordSearchUrl;
+    private String keywordSearchEndpoint;
+
+    // 상세 검색
+    @Value("${open-api.endpoint.detail}")
+    private String detailEndpoint;
 
     @Override
     public TravelInfoResponseDTO.DefaultTravelInfoListDTO getTravels(String keyword, int page, int size) {
@@ -55,10 +59,39 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     @Override
-    public TravelInfoResponseDTO.DefaultTravelInfoListDTO getDefaultTravel(int page, int size) {
+    public TravelInfoResponseDTO.TravelDetailInfoDTO getDetailOfTravel(String contentId, int page, int size) {
         WebClient webClient = openApiWebClient.getEnglishTravelWebClient();
 
-        String url = englishUrl + localBaseUrl;
+        String url = englishUrl + detailEndpoint;
+        URI uri = UriComponentsBuilder.fromUriString(url)
+                .queryParam("numOfRows", size)
+                .queryParam("pageNo", page)
+                .queryParam("MobileOS", MOBILE_OS)
+                .queryParam("MobileApp", MOBILE_APP)
+                .queryParam("_type", TYPE)
+                .queryParam("contentId", contentId)
+                .queryParam("defaultYN", "Y")
+                .queryParam("firstImageYN", "Y")
+                .queryParam("addrinfoYN", "Y")
+                .queryParam("mapinfoYN", "Y")
+                .queryParam("overviewYN", "Y")
+                .queryParam("serviceKey", encodedKey)
+                .build(true)
+                .toUri();
+
+        String response = webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        OpenApiResponseDTO.OpenApiDetailDTO openApiDetailDTO = mappedOpenApiDetailDTO(response);
+        return mappedTravelDetailInfoDTO(openApiDetailDTO);
+    }
+
+    private TravelInfoResponseDTO.DefaultTravelInfoListDTO getDefaultTravel(int page, int size) {
+        WebClient webClient = openApiWebClient.getEnglishTravelWebClient();
+
+        String url = englishUrl + localBaseEndpoint;
 
         // 제주의 관광지 가져오기
         // TODO: 어떤 것으로 가져올지 한 번 상의해보기
@@ -81,14 +114,13 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .bodyToMono(String.class)
                 .block();
         OpenApiResponseDTO.OpenApiInfoListDTO openApiInfoListDTO = mappedOpenApiInfoDTO(response);
-        return mappedWithTravelInfoDTO(openApiInfoListDTO);
+        return mappedTravelInfoDTO(openApiInfoListDTO);
     }
 
-    @Override
-    public TravelInfoResponseDTO.DefaultTravelInfoListDTO searchKeyword(String keyword, int page, int size) {
+    private TravelInfoResponseDTO.DefaultTravelInfoListDTO searchKeyword(String keyword, int page, int size) {
         WebClient webClient = openApiWebClient.getEnglishTravelWebClient();
 
-        String url = englishUrl + keywordSearchUrl;
+        String url = englishUrl + keywordSearchEndpoint;
 
         URI uri = UriComponentsBuilder.fromUriString(url)
                 .queryParam("numOfRows", size)
@@ -110,7 +142,7 @@ public class OpenApiServiceImpl implements OpenApiService {
                 .block();
 
         OpenApiResponseDTO.OpenApiInfoListDTO openApiInfoListDTO = mappedOpenApiInfoDTO(response);
-        return mappedWithTravelInfoDTO(openApiInfoListDTO);
+        return mappedTravelInfoDTO(openApiInfoListDTO);
     }
 
     /**
@@ -141,7 +173,23 @@ public class OpenApiServiceImpl implements OpenApiService {
      * @param dto OpenApiResponseDTO.OpenApiInfoListDTO
      * @return TravelInfoResponseDTO.DefaultTravelInfoListDTO
      */
-    private TravelInfoResponseDTO.DefaultTravelInfoListDTO mappedWithTravelInfoDTO(OpenApiResponseDTO.OpenApiInfoListDTO dto) {
+    private TravelInfoResponseDTO.DefaultTravelInfoListDTO mappedTravelInfoDTO(OpenApiResponseDTO.OpenApiInfoListDTO dto) {
         return TravelInfoResponseDTO.DefaultTravelInfoListDTO.from(dto);
+    }
+
+    private OpenApiResponseDTO.OpenApiDetailDTO mappedOpenApiDetailDTO(String response) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree(response).path("response").path("body").path("items").path("item").get(0);
+            return objectMapper.convertValue(jsonNode, OpenApiResponseDTO.OpenApiDetailDTO.class);
+
+        } catch (Exception e) {
+            log.error(Arrays.toString(e.getStackTrace()));
+            return null;
+        }
+    }
+
+    private TravelInfoResponseDTO.TravelDetailInfoDTO mappedTravelDetailInfoDTO(OpenApiResponseDTO.OpenApiDetailDTO dto) {
+        return TravelInfoResponseDTO.TravelDetailInfoDTO.from(dto);
     }
 }
