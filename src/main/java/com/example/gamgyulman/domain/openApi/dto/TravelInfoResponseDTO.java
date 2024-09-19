@@ -23,9 +23,9 @@ public class TravelInfoResponseDTO {
 
         public static DefaultTravelInfoDTO from(OpenApiResponseDTO.OpenApiInfoDTO dto) {
             List<String> imageList= new ArrayList<>();
-            if (!dto.getFirstimage().isEmpty()) {
+            if (dto.getFirstimage() != null && !dto.getFirstimage().isEmpty()) {
                 imageList.add(dto.getFirstimage());
-                if (!dto.getFirstimage2().isEmpty()) {
+                if (dto.getFirstimage2() != null && !dto.getFirstimage2().isEmpty()) {
                     imageList.add(dto.getFirstimage2());
                 }
             }
@@ -85,9 +85,9 @@ public class TravelInfoResponseDTO {
 
         public static TravelDetailInfoDTO from(OpenApiResponseDTO.OpenApiDetailDTO dto) {
             List<String> imageList= new ArrayList<>();
-            if (!dto.getFirstimage().isEmpty()) {
+            if (dto.getFirstimage() != null && !dto.getFirstimage().isEmpty()) {
                 imageList.add(dto.getFirstimage());
-                if (!dto.getFirstimage2().isEmpty()) {
+                if (dto.getFirstimage2() != null && !dto.getFirstimage2().isEmpty()) {
                     imageList.add(dto.getFirstimage2());
                 }
             }
