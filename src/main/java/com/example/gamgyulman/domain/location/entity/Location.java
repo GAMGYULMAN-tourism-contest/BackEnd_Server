@@ -18,11 +18,16 @@ public class Location extends BaseEntity {
     private Long id;
 
     @Column(name = "content_id")
-    private int contentId;
+    private String contentId;
 
     @Column(name = "content_type_id")
-    private int contentTypeId;
+    private String contentTypeId;
 
     @OneToOne(mappedBy = "location")
     private Event event;
+
+    public void update(String contentId, String contentTypeId) {
+        this.contentId = contentId;
+        this.contentTypeId = contentTypeId;
+    }
 }

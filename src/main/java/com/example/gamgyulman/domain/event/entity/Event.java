@@ -24,11 +24,11 @@ public class Event extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "startTime")
-    private int startTime; // 시간
+    @Column(name = "startTime") // "09:00" 형태
+    private String startTime; // 시간
 
     @Column(name = "endTime")
-    private int endTime;
+    private String endTime;
 
     @OneToOne
     @JoinColumn(name = "location_id")
@@ -37,4 +37,17 @@ public class Event extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "day_events_id")
     private DayEvents dayEvents;
+
+    public void update(String title, String description, String startTime, String endTime, Location location, DayEvents dayEvents) {
+        this.title = title;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.dayEvents = dayEvents;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
