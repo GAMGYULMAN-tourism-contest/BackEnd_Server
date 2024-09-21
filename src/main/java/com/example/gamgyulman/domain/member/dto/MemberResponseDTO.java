@@ -1,5 +1,6 @@
 package com.example.gamgyulman.domain.member.dto;
 
+import com.example.gamgyulman.domain.member.entity.Member;
 import lombok.*;
 
 public class MemberResponseDTO {
@@ -23,5 +24,14 @@ public class MemberResponseDTO {
         private String email;
         private String name;
         private String image;
+
+        public static MemberInfoDTO from(Member member) {
+            return MemberInfoDTO.builder()
+                    .id(member.getId())
+                    .email(member.getEmail())
+                    .name(member.getName())
+                    .image(member.getImage())
+                    .build();
+        }
     }
 }
