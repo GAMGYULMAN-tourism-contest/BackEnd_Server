@@ -14,6 +14,7 @@ public class CorsConfig {
         List<String> allowedURL = new ArrayList<>();
         allowedURL.add("http://localhost:8080");
         allowedURL.add("http://localhost:5173");
+        allowedURL.add("http://localhost:3000");
 
         List<String> allowedMethod = new ArrayList<>();
         allowedMethod.add("GET");
@@ -24,6 +25,7 @@ public class CorsConfig {
         corsConfiguration.setAllowedOrigins(allowedURL);
         corsConfiguration.setAllowedMethods(allowedMethod);
         corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource cors = new UrlBasedCorsConfigurationSource();
         cors.registerCorsConfiguration("/**", corsConfiguration);
