@@ -36,15 +36,26 @@ public class InvitationCommandServiceImpl implements InvitationCommandService{
     @Override
     public Invitation createInvitation(Member member, InvitationRequestDTO.CreateInvitationDTO dto) {
 
-        if (isParticipant(dto.getScheduleId(), dto.getReceiverEmail())) {
-            throw new InvitationException(InvitationErrorCode.ALREADY_EXIST);
-        }
-
         Schedule schedule = scheduleRepository.findById(dto.getScheduleId()).orElseThrow(() ->
                 new ScheduleException(ScheduleErrorCode.NOT_FOUND));
 
         Member receiver = memberRepository.findByEmail(dto.getReceiverEmail()).orElseThrow(() ->
                 new MemberException(MemberErrorCode.NOT_FOUND));
+
+        // 본인인지 확인
+        if (member.getId().equals(receiver.getId())) {
+            throw new InvitationException(InvitationErrorCode.CANNOT_INVITE_YOURSELF);
+        }
+
+        // 참여자인지 확인
+        if (isParticipant(dto.getScheduleId(), dto.getReceiverEmail())) {
+            throw new InvitationException(InvitationErrorCode.ALREADY_PARTICIPANT);
+        }
+
+        // 초대 중인지 확인
+        if (invitationRepository.findByScheduleAndReceiverAndStatusNotIn(schedule, receiver, List.of(InvitationStatus.ACCEPT, InvitationStatus.DENIED)).isPresent()) {
+            throw new InvitationException(InvitationErrorCode.ALREADY_EXIST);
+        }
 
         return invitationRepository.save(
                 Invitation.builder()
@@ -63,7 +74,11 @@ public class InvitationCommandServiceImpl implements InvitationCommandService{
         Invitation invitation = invitationRepository.findById(dto.getInvitationId()).orElseThrow(() ->
                 new InvitationException(InvitationErrorCode.NOT_FOUND));
 
-        if (!isReadOrNotRead(dto.getStatus()) && isReadOrNotRead(invitation.getStatus().name())) {
+        if (!isReadOrNotRead(invitation.getStatus().name())) {
+            throw new InvitationException(InvitationErrorCode.ALREADY_PROCESSED);
+        }
+
+        if (isReadOrNotRead(dto.getStatus())) {
             throw new InvitationException(InvitationErrorCode.UNSUPPORTED_STATUS);
         }
 

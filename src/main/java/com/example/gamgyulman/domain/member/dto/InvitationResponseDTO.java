@@ -5,6 +5,7 @@ import com.example.gamgyulman.domain.schedule.dto.ScheduleResponseDTO;
 import lombok.*;
 import org.springframework.data.domain.Slice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InvitationResponseDTO {
@@ -41,11 +42,14 @@ public class InvitationResponseDTO {
         private Long cursor;
 
         public static InvitationInfoListDTO from(Slice<Invitation> invitations) {
-            List<InvitationInfoDTO> list = invitations.getContent().stream().map(InvitationInfoDTO::from).toList();
+            List<InvitationInfoDTO> list = new ArrayList<>();
+            if (!invitations.getContent().isEmpty()) {
+                list = invitations.getContent().stream().map(InvitationInfoDTO::from).toList();
+            }
             return InvitationInfoListDTO.builder()
                     .invitations(list)
                     .hasNext(invitations.hasNext())
-                    .cursor(list.get(list.size() - 1).getId())
+                    .cursor(invitations.hasNext() ? list.get(list.size() - 1).getId() : null)
                     .build();
         }
     }
