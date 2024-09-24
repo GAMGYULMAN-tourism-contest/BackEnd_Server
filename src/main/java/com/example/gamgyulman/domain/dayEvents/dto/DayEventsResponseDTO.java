@@ -1,9 +1,11 @@
 package com.example.gamgyulman.domain.dayEvents.dto;
 
 import com.example.gamgyulman.domain.dayEvents.entity.DayEvents;
+import com.example.gamgyulman.domain.event.dto.EventResponseDTO;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 public class DayEventsResponseDTO {
@@ -16,12 +18,14 @@ public class DayEventsResponseDTO {
         private Long id;
         private int day;
         private LocalDate date;
+        private List<EventResponseDTO.EventPreviewDTO> events;
 
         public static DayEventsInfoDTO from(DayEvents dayEvents) {
             return DayEventsInfoDTO.builder()
                     .id(dayEvents.getId())
                     .day(dayEvents.getDay())
                     .date(dayEvents.getDate())
+                    .events(dayEvents.getEvents().stream().map(EventResponseDTO.EventPreviewDTO::from).sorted(Comparator.comparing(EventResponseDTO.EventPreviewDTO::getStartTime)).toList())
                     .build();
         }
     }

@@ -11,6 +11,28 @@ public class EventResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @Builder
+    public static class EventPreviewDTO {
+        private Long id;
+        private String title;
+        private String description;
+        private String startTime;
+        private String endTime;
+
+        public static EventPreviewDTO from(Event event) {
+            return EventPreviewDTO.builder()
+                    .id(event.getId())
+                    .title(event.getTitle())
+                    .description(event.getDescription())
+                    .startTime(event.getStartTime())
+                    .endTime(event.getEndTime())
+                    .build();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @Builder
     public static class EventInfoDTO {
         private Long id;
         private String title;
