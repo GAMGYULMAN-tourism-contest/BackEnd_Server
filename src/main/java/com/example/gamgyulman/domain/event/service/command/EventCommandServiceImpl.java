@@ -11,10 +11,12 @@ import com.example.gamgyulman.domain.event.exception.EventException;
 import com.example.gamgyulman.domain.event.repository.EventRepository;
 import com.example.gamgyulman.domain.location.dto.LocationRequestDTO;
 import com.example.gamgyulman.domain.location.entity.Location;
+import com.example.gamgyulman.domain.location.repository.LocationRepository;
 import com.example.gamgyulman.domain.location.service.command.LocationCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class EventCommandServiceImpl implements EventCommandService {
     private final DayEventsRepository dayEventsRepository;
     private final EventRepository eventRepository;
     private final LocationCommandService locationCommandService;
+    private final LocationRepository locationRepository;
 
     @Override
     public Event createEvent(EventRequestDTO.CreateEventDTO dto) {
@@ -88,6 +91,14 @@ public class EventCommandServiceImpl implements EventCommandService {
 
     @Override
     public void deleteEvent(Long id) {
+        // hard delete
+        Event event = eventRepository.findById(id).orElseThrow(() ->
+                new EventException(EventErrorCode.NOT_FOUND));
+
+        if (event.getLocation() != null) {
+            locationCommandService.deleteLocation(event.getLocation().getId());
+        }
+
         eventRepository.deleteById(id);
     }
 
@@ -101,8 +112,6 @@ public class EventCommandServiceImpl implements EventCommandService {
         return eventId == null ?
                 eventRepository.existsByDayEventsIsAndStartTimeIsBetweenOrEndTimeIsBetween(
                         dayEvents,
-                        start,
-                        end,
                         start,
                         end
                 ) :

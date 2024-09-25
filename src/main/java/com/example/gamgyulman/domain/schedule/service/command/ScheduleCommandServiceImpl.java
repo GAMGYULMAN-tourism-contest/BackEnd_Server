@@ -1,8 +1,11 @@
 package com.example.gamgyulman.domain.schedule.service.command;
 
+import com.example.gamgyulman.domain.dayEvents.entity.DayEvents;
 import com.example.gamgyulman.domain.dayEvents.service.command.DayEventsCommandService;
 import com.example.gamgyulman.domain.member.entity.Member;
+import com.example.gamgyulman.domain.member.repository.InvitationRepository;
 import com.example.gamgyulman.domain.schedule.dto.ScheduleRequestDTO;
+import com.example.gamgyulman.domain.schedule.dto.ScheduleResponseDTO;
 import com.example.gamgyulman.domain.schedule.entity.Schedule;
 import com.example.gamgyulman.domain.schedule.entity.ScheduleParticipant;
 import com.example.gamgyulman.domain.schedule.entity.enums.ScheduleParticipantRole;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,9 +30,10 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
     private final ScheduleRepository scheduleRepository;
     private final ScheduleParticipantRepository scheduleParticipantRepository;
     private final DayEventsCommandService dayEventsCommandService;
+    private final InvitationRepository invitationRepository;
 
     @Override
-    public Schedule createSchedule(Member member, ScheduleRequestDTO.CreateScheduleDTO dto) {
+    public ScheduleResponseDTO.CreatedScheduleDTO createSchedule(Member member, ScheduleRequestDTO.CreateScheduleDTO dto) {
         Schedule schedule = scheduleRepository.save(dto.toEntity());
         ScheduleParticipant participant = ScheduleParticipant.builder()
                 .role(ScheduleParticipantRole.OWNER)
@@ -37,13 +42,13 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
                 .build();
         scheduleParticipantRepository.save(participant);
 
-        dayEventsCommandService.createAllDayEvents(schedule);
+        List<Long> dayEvents = dayEventsCommandService.createAllDayEvents(schedule).stream().map(DayEvents::getId).toList();
 
-        return schedule;
+        return ScheduleResponseDTO.CreatedScheduleDTO.from(schedule, dayEvents);
     }
 
     @Override
-    public Schedule updateSchedule(Member member, Long scheduleId, ScheduleRequestDTO.UpdateScheduleDTO dto) {
+    public ScheduleResponseDTO.UpdatedScheduleDTO updateSchedule(Member member, Long scheduleId, ScheduleRequestDTO.UpdateScheduleDTO dto) {
 
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() ->
                 new ScheduleException(ScheduleErrorCode.NOT_FOUND));
@@ -65,9 +70,9 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
             throw new ScheduleException(ScheduleErrorCode.FORBIDDEN_MODIFY);
         }
 
-        dayEventsCommandService.updateDateOfDayEvents(schedule);
+        List<Long> dayEvents = dayEventsCommandService.updateDateOfDayEvents(schedule).stream().map(DayEvents::getId).toList();
 
-        return schedule;
+        return ScheduleResponseDTO.UpdatedScheduleDTO.from(schedule, dayEvents);
     }
 
     @Override
@@ -79,7 +84,16 @@ public class ScheduleCommandServiceImpl implements ScheduleCommandService {
 
         ScheduleParticipantRole role = participant.getRole();
         if (role.equals(ScheduleParticipantRole.OWNER)) {
-            // TODO: 삭제 로직 구현
+
+            for (DayEvents dayEvents : schedule.getDayEventsList()) {
+                dayEventsCommandService.deleteDayEvents(dayEvents.getId());
+            }
+
+            invitationRepository.deleteAllBySchedule(schedule);
+
+            scheduleParticipantRepository.deleteAllBySchedule(schedule);
+
+            scheduleRepository.deleteById(id);
         }
         else {
             throw new ScheduleException(ScheduleErrorCode.FORBIDDEN_DELETE);

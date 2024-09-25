@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface ScheduleParticipantRepository extends JpaRepository<ScheduleParticipant, Long> {
     Optional<ScheduleParticipant> findByScheduleIsAndMemberIs(Schedule schedule, Member member);
     List<ScheduleParticipant> findByMemberIsOrderByCreatedAtDesc(Member member);
+    void deleteAllBySchedule(Schedule schedule);
 }

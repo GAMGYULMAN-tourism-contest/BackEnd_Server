@@ -1,7 +1,12 @@
 package com.example.gamgyulman.domain.dayEvents.service.command;
 
 import com.example.gamgyulman.domain.dayEvents.entity.DayEvents;
+import com.example.gamgyulman.domain.dayEvents.exception.DayEventsErrorCode;
+import com.example.gamgyulman.domain.dayEvents.exception.DayEventsException;
 import com.example.gamgyulman.domain.dayEvents.repository.DayEventsRepository;
+import com.example.gamgyulman.domain.event.entity.Event;
+import com.example.gamgyulman.domain.event.repository.EventRepository;
+import com.example.gamgyulman.domain.event.service.command.EventCommandService;
 import com.example.gamgyulman.domain.schedule.entity.Schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,7 @@ import java.util.List;
 public class DayEventsCommandServiceImpl implements DayEventsCommandService{
 
     private final DayEventsRepository dayEventsRepository;
+    private final EventCommandService eventCommandService;
 
     @Override
     public List<DayEvents> createAllDayEvents(Schedule schedule) {
@@ -76,6 +82,13 @@ public class DayEventsCommandServiceImpl implements DayEventsCommandService{
 
     @Override
     public void deleteDayEvents(Long id) {
+        DayEvents dayEvents = dayEventsRepository.findById(id).orElseThrow(() ->
+                new DayEventsException(DayEventsErrorCode.NOT_FOUND));
+
+        for (Event event : dayEvents.getEvents()) {
+            eventCommandService.deleteEvent(event.getId());
+        }
+
         dayEventsRepository.deleteById(id);
     }
 }
