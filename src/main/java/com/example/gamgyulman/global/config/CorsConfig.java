@@ -14,6 +14,7 @@ public class CorsConfig {
         List<String> allowedURL = new ArrayList<>();
         allowedURL.add("http://localhost:8080");
         allowedURL.add("http://localhost:5173");
+        allowedURL.add("http://localhost:5174");
         allowedURL.add("http://localhost:3000");
 
         List<String> allowedMethod = new ArrayList<>();
