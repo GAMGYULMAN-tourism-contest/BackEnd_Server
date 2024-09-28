@@ -5,6 +5,7 @@ import com.example.gamgyulman.domain.member.entity.Member;
 import com.example.gamgyulman.domain.schedule.dto.ScheduleRequestDTO;
 import com.example.gamgyulman.domain.schedule.dto.ScheduleResponseDTO;
 import com.example.gamgyulman.domain.schedule.entity.Schedule;
+import com.example.gamgyulman.domain.schedule.entity.ScheduleParticipant;
 import com.example.gamgyulman.domain.schedule.service.command.ScheduleCommandService;
 import com.example.gamgyulman.domain.schedule.service.query.ScheduleQueryService;
 import com.example.gamgyulman.global.apiPayload.CustomResponse;
@@ -53,7 +54,7 @@ public class ScheduleController {
     @GetMapping("/members")
     @Operation(summary = "사용자의 스케줄 목록 가져오기", description = "사용자의 스케줄 목록 가져오는 API")
     public CustomResponse<ScheduleResponseDTO.SchedulePreviewListDTO> getSchedulesOfMember(@AuthenticatedMember Member member) {
-        List<Schedule> scheduleList = scheduleQueryService.getSchedulesOfMember(member);
+        List<ScheduleParticipant> scheduleList = scheduleQueryService.getSchedulesOfMember(member);
         return CustomResponse.onSuccess(ScheduleResponseDTO.SchedulePreviewListDTO.from(scheduleList));
     }
 

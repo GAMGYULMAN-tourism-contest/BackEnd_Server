@@ -2,6 +2,7 @@ package com.example.gamgyulman.domain.schedule.dto;
 
 import com.example.gamgyulman.domain.dayEvents.dto.DayEventsResponseDTO;
 import com.example.gamgyulman.domain.schedule.entity.Schedule;
+import com.example.gamgyulman.domain.schedule.entity.ScheduleParticipant;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -52,7 +53,7 @@ public class ScheduleResponseDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class SchedulePreviewDTO {
+    public static class SchedulePreviewNoRoleDTO {
         private Long id;
         private String title;
         private String description;
@@ -60,7 +61,33 @@ public class ScheduleResponseDTO {
         private LocalDate startDate;
         private LocalDate endDate;
 
-        public static SchedulePreviewDTO from(Schedule schedule) {
+        public static SchedulePreviewNoRoleDTO from(Schedule schedule) {
+            return SchedulePreviewNoRoleDTO.builder()
+                    .id(schedule.getId())
+                    .title(schedule.getTitle())
+                    .description(schedule.getDescription())
+                    .period(schedule.getPeriod())
+                    .startDate(schedule.getStartDate())
+                    .endDate(schedule.getEndDate())
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class SchedulePreviewDTO {
+        private Long id;
+        private String title;
+        private String description;
+        private int period;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private String role;
+
+        public static SchedulePreviewDTO from(ScheduleParticipant scheduleParticipant) {
+            Schedule schedule = scheduleParticipant.getSchedule();
             return SchedulePreviewDTO.builder()
                     .id(schedule.getId())
                     .title(schedule.getTitle())
@@ -68,6 +95,7 @@ public class ScheduleResponseDTO {
                     .period(schedule.getPeriod())
                     .startDate(schedule.getStartDate())
                     .endDate(schedule.getEndDate())
+                    .role(scheduleParticipant.getRole().name())
                     .build();
         }
     }
@@ -106,9 +134,9 @@ public class ScheduleResponseDTO {
     public static class SchedulePreviewListDTO {
         private List<SchedulePreviewDTO> list;
 
-        public static SchedulePreviewListDTO from(List<Schedule> scheduleList) {
+        public static SchedulePreviewListDTO from(List<ScheduleParticipant> scheduleParticipants) {
             return SchedulePreviewListDTO.builder()
-                    .list(scheduleList.stream().map(SchedulePreviewDTO::from).toList())
+                    .list(scheduleParticipants.stream().map(SchedulePreviewDTO::from).toList())
                     .build();
         }
     }

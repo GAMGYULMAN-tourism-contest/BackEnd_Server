@@ -16,7 +16,7 @@ public class InvitationResponseDTO {
     @Builder
     public static class InvitationInfoDTO {
         private Long id;
-        private ScheduleResponseDTO.SchedulePreviewDTO schedule;
+        private ScheduleResponseDTO.SchedulePreviewNoRoleDTO schedule;
         private MemberResponseDTO.MemberInfoDTO sender;
         private MemberResponseDTO.MemberInfoDTO receiver;
         private String status;
@@ -24,7 +24,7 @@ public class InvitationResponseDTO {
         public static InvitationInfoDTO from(Invitation invitation) {
             return InvitationInfoDTO.builder()
                     .id(invitation.getId())
-                    .schedule(ScheduleResponseDTO.SchedulePreviewDTO.from(invitation.getSchedule()))
+                    .schedule(ScheduleResponseDTO.SchedulePreviewNoRoleDTO.from(invitation.getSchedule()))
                     .sender(MemberResponseDTO.MemberInfoDTO.from(invitation.getSender()))
                     .receiver(MemberResponseDTO.MemberInfoDTO.from(invitation.getReceiver()))
                     .status(invitation.getStatus().name())

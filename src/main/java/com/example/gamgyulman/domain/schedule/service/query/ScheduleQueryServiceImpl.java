@@ -22,12 +22,8 @@ public class ScheduleQueryServiceImpl implements ScheduleQueryService {
     private final ScheduleParticipantRepository scheduleParticipantRepository;
 
     @Override
-    public List<Schedule> getSchedulesOfMember(Member member) {
-        return scheduleParticipantRepository.findByMemberIsOrderByCreatedAtDesc(member)
-                .stream()
-                .map(ScheduleParticipant::getSchedule)
-                .distinct()
-                .toList();
+    public List<ScheduleParticipant> getSchedulesOfMember(Member member) {
+        return scheduleParticipantRepository.findByMemberIsOrderByCreatedAtDesc(member);
     }
 
     @Override
