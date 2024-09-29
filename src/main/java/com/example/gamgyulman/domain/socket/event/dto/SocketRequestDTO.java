@@ -1,4 +1,4 @@
-package com.example.gamgyulman.domain.event.dto;
+package com.example.gamgyulman.domain.socket.event.dto;
 
 import lombok.Getter;
 

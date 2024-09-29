@@ -1,4 +1,4 @@
-package com.example.gamgyulman.domain.event.service.socket;
+package com.example.gamgyulman.domain.socket.event.service;
 
 import java.security.Principal;
 import java.util.Map;
