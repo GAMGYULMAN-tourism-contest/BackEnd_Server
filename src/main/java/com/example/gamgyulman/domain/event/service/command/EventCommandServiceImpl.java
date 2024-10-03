@@ -119,8 +119,6 @@ public class EventCommandServiceImpl implements EventCommandService {
                         eventId,
                         dayEvents,
                         start,
-                        end,
-                        start,
                         end
                 );
     }
