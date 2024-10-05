@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final UserDetailService userDetailService;
-    private String[] allowedURL = {"/", "/swagger-ui/**", "/swagger-resources/**","/v3/api-docs/**", "/oauth2/**", "/login/oauth2/**", "/socket/**"};
+    private String[] allowedURL = {"/", "/swagger-ui/**", "/swagger-resources/**","/v3/api-docs/**", "/oauth2/**", "/login/oauth2/**", "/socket/**", "/test/**"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
