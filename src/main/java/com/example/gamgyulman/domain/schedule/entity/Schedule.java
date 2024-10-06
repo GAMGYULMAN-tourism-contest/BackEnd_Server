@@ -45,4 +45,9 @@ public class Schedule extends BaseEntity {
         this.startDate = startDate;
         this.endDate = startDate.plusDays(period);
     }
+
+    public void update(int period) {
+        this.period = period;
+        this.endDate = startDate.plusDays(period);
+    }
 }

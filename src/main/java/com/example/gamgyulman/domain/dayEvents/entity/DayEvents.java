@@ -37,4 +37,9 @@ public class DayEvents extends BaseEntity {
     public void updateDate(LocalDate date) {
         this.date= date;
     }
+
+    public void updateDate(int day, LocalDate date) {
+        this.day = day;
+        this.date= date;
+    }
 }
