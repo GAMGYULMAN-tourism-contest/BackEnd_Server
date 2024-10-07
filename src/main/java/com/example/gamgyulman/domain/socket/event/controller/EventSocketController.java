@@ -1,7 +1,6 @@
 package com.example.gamgyulman.domain.socket.event.controller;
 
 import com.example.gamgyulman.domain.socket.event.service.EventSocketService;
-import com.example.gamgyulman.domain.socket.event.service.SocketParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,6 @@ import java.util.Map;
 public class EventSocketController {
 
     private final EventSocketService eventSocketService;
-    private final SocketParticipantService socketParticipantService;
 
     @MessageMapping("/create")
     public void createEventWithSocket(Principal principal, Map<String, Object> payload) {
@@ -31,8 +29,8 @@ public class EventSocketController {
         eventSocketService.deleteBody(principal, payload);
     }
 
-    @MessageMapping("/participants")
-    public void getScheduleParticipant(Principal principal, Map<String, Object> payload) {
-        socketParticipantService.sendSubscribeMemberCount(principal, payload);
-    }
+//    @MessageMapping("/participants")
+//    public void getScheduleParticipant(Principal principal, Map<String, Object> payload) {
+//        socketParticipantService.sendSubscribeMemberCount(principal, payload);
+//    }
 }
