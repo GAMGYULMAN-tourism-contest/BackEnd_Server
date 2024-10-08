@@ -5,6 +5,7 @@ import com.example.gamgyulman.domain.event.dto.EventResponseDTO;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class DayEventsResponseDTO {
                     .id(dayEvents.getId())
                     .day(dayEvents.getDay())
                     .date(dayEvents.getDate())
-                    .events(dayEvents.getEvents().stream().map(EventResponseDTO.EventPreviewDTO::from).sorted(Comparator.comparing(EventResponseDTO.EventPreviewDTO::getStartTime)).toList())
+                    .events(dayEvents.getEvents() == null ? new ArrayList<>(): dayEvents.getEvents().stream().map(EventResponseDTO.EventPreviewDTO::from).sorted(Comparator.comparing(EventResponseDTO.EventPreviewDTO::getStartTime)).toList())
                     .build();
         }
     }
