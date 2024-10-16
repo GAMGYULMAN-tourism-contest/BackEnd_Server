@@ -10,6 +10,8 @@ import com.example.gamgyulman.domain.member.service.command.InvitationCommandSer
 import com.example.gamgyulman.domain.member.service.query.InvitationQueryService;
 import com.example.gamgyulman.global.apiPayload.CustomResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +53,10 @@ public class InvitationController {
     // 초대 목록 다 가져오기 command update
     @GetMapping
     @Operation(summary = "초대 목록 가져오기", description = "초대 목록 가져오는 API")
+    @Parameters({
+            @Parameter(name = "cursor", description = "커서로 사용할 ID, 처음이면 불필요"),
+            @Parameter(name = "offset", description = "페이지 크기")
+    })
     public CustomResponse<InvitationResponseDTO.InvitationInfoListDTO> getInvitations(@AuthenticatedMember Member member,
                                                                                       @RequestParam(required = false) Long cursor,
                                                                                       @RequestParam(required = false, defaultValue = "10") int offset) {
@@ -65,6 +71,7 @@ public class InvitationController {
     // 초대 삭제
     @DeleteMapping("/{invitationId}")
     @Operation(summary = "초대 삭제", description = "초대 삭제하는 API")
+    @Parameter(name = "invitationId", description = "삭제할 초대 Id")
     public CustomResponse<Long> deleteInvitation(@PathVariable Long invitationId) {
         invitationCommandService.deleteInvitation(invitationId);
         return CustomResponse.onSuccess(invitationId);
