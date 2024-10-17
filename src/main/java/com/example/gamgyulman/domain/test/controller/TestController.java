@@ -7,6 +7,7 @@ import com.example.gamgyulman.global.apiPayload.code.GeneralErrorCode;
 import com.example.gamgyulman.global.apiPayload.code.GeneralSuccessCode;
 import com.example.gamgyulman.global.apiPayload.exception.GeneralException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ public class TestController {
 
     @PostMapping("/constraint")
     @Operation(summary = "Annotation으로 부적절한 Param, field 검사", description = "Request Body의 field 값이 조건에 안 맞거나 Request Parameter가 조건에 안 맞는 경우")
+    @Parameter(name = "positive", description = "양수면 정상, 음수면 에러 처리")
     public CustomResponse<String> constraintTest(@PositiveNum int positive) {
         return CustomResponse.onSuccess("Request Param이 정상적입니다.");
     }

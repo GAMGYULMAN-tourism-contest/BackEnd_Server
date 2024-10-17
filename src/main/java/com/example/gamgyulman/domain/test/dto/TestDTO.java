@@ -1,6 +1,7 @@
 package com.example.gamgyulman.domain.test.dto;
 
 import com.example.gamgyulman.domain.test.validation.annotation.PositiveNum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public class TestDTO {
     @Getter
     public static class PositiveDTO {
         @PositiveNum
+        @Schema(defaultValue = "-1")
         private int value;
     }
 }
