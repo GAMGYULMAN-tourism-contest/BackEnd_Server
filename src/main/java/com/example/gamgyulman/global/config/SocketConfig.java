@@ -4,11 +4,9 @@ import com.example.gamgyulman.domain.member.jwt.JwtProvider;
 import com.example.gamgyulman.domain.member.service.UserDetailService;
 import com.example.gamgyulman.global.config.interceptor.CustomInterceptor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -20,6 +18,7 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtProvider jwtProvider;
     private final UserDetailService userDetailService;
+    private final CustomInterceptor customInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -35,11 +34,6 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(customChannelInterceptor());
-    }
-
-    @Bean
-    public ChannelInterceptor customChannelInterceptor() {
-        return new CustomInterceptor(jwtProvider, userDetailService);
+        registration.interceptors(customInterceptor);
     }
 }
