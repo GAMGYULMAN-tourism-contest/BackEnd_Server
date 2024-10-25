@@ -4,7 +4,6 @@ import com.example.gamgyulman.domain.member.dto.InvitationRequestDTO;
 import com.example.gamgyulman.domain.member.entity.Invitation;
 import com.example.gamgyulman.domain.member.entity.Member;
 import com.example.gamgyulman.domain.member.entity.enums.InvitationStatus;
-import org.springframework.data.domain.Slice;
 
 import java.util.List;
 

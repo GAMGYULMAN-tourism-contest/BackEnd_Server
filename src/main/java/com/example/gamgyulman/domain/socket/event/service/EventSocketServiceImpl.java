@@ -31,8 +31,6 @@ public class EventSocketServiceImpl implements EventSocketService{
 
     private final EventCommandService eventCommandService;
     private final ScheduleParticipantRepository scheduleParticipantRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final SimpUserRegistry simpUserRegistry;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ObjectMapper objectMapper;
 

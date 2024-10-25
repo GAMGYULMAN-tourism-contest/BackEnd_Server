@@ -3,7 +3,6 @@ package com.example.gamgyulman.domain.schedule.service.command;
 import com.example.gamgyulman.domain.member.entity.Member;
 import com.example.gamgyulman.domain.schedule.dto.ScheduleRequestDTO;
 import com.example.gamgyulman.domain.schedule.dto.ScheduleResponseDTO;
-import com.example.gamgyulman.domain.schedule.entity.Schedule;
 
 public interface ScheduleCommandService {
 

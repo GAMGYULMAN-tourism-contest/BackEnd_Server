@@ -3,8 +3,6 @@ package com.example.gamgyulman.domain.location.dto;
 import com.example.gamgyulman.domain.location.entity.Recommend;
 import lombok.*;
 
-import java.util.List;
-
 public class RecommendResponseDTO {
 
     @Getter
