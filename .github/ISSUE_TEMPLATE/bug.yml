@@ -1,0 +1,34 @@
+name: Feature Template
+description: 기능 추가할 때 쓰는 템플릿
+title: "🐛 [Fix] "
+labels: ["bug"]
+
+body:
+  - type: dropdown
+    id: select-attribute
+    attributes:
+      label: "기능 종류"
+      description: "어떤 기능을 추가하시나요?"
+      options:
+        - "기타"
+        - "오류 수정"
+        - "기능, 비즈니스 로직 수정"
+        - "인프라 관련 수정"
+    validations:
+      required: true
+  - type: input
+    id: bug-content
+    attributes:
+      label: 어떤 것을 수정하시나요?
+      description: 수정할 것에 대한 설명을 적어주세요.
+      placeholder: ex. 게시글 DTO 수정
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: 자세한 내용 (Optional)
+      description: 설명이 부족하다면 더 자세한 내용을 적어주세요.
+      placeholder: ex. 게시글 DTO 필드 수정
+    validations:
+      required: false
