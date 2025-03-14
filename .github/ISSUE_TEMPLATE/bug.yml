@@ -1,5 +1,5 @@
-name: Feature Template
-description: 기능 추가할 때 쓰는 템플릿
+name: Bug Template
+description: 수정할 때 쓰는 템플릿
 title: "🐛 [Fix] "
 labels: ["bug"]
 
